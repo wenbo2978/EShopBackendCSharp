@@ -1,0 +1,42 @@
+.env
+
+# Build results
+bin/
+obj/
+
+# User-specific files
+*.user
+*.suo
+*.userosscache
+*.sln.docstates
+
+# Visual Studio cache/options
+.vs/
+
+# ASP.NET specific
+appsettings.json
+appsettings.Development.json
+appsettings.Local.json
+
+# Logs
+*.log
+
+# Publish output
+wwwroot/dist/
+wwwroot/lib/
+
+# NuGet packages
+*.nupkg
+packages/
+*.snupkg
+
+# Resharper
+_ReSharper*/
+*.DotSettings.user
+
+# Rider
+.idea/
+
+# OS generated
+.DS_Store
+Thumbs.db

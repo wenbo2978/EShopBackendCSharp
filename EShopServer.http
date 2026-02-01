@@ -1,0 +1,6 @@
+@EShopServer_HostAddress = http://localhost:5224
+
+GET {{EShopServer_HostAddress}}/api/user/3
+Accept: application/json
+
+###
