@@ -1,36 +1,26 @@
-using Microsoft.EntityFrameworkCore;
+using Microsoft.AspNetCore.Identity;
 
 public class UserRepository : IUserRepository
 {
-    private readonly AppDbContext _context;
+    private readonly UserManager<AppUser> _userManager;
 
-    public UserRepository(AppDbContext context)
+    public UserRepository(UserManager<AppUser> userManager)
     {
-        _context = context;
-    }
-    public async Task<User> CreateAsync(User user)
-    {
-        _context.Users.Add(user);
-        await _context.SaveChangesAsync();
-        return user;
+        _userManager = userManager;
     }
 
-    public async Task<User?> GetUserAsync(int id)
-    {
-        return await _context.Users
-            .Include(u => u.Role)
-            .FirstOrDefaultAsync(u => u.Id == id);
-    }
+    public Task<AppUser?> FindByIdAsync(string id)
+        => _userManager.FindByIdAsync(id);
 
-    public async Task UpdateAsync(User user)
-    {
-        _context.Users.Update(user);
-        await _context.SaveChangesAsync();
-    }
+    public Task<AppUser?> FindByEmailAsync(string email)
+        => _userManager.FindByEmailAsync(email);
 
-    public async Task DeleteAsync(User user)
-    {
-        _context.Users.Remove(user);
-        await _context.SaveChangesAsync();
-    }
+    public Task<IList<string>> GetRolesAsync(AppUser user)
+        => _userManager.GetRolesAsync(user);
+
+    public Task<IdentityResult> UpdateAsync(AppUser user)
+        => _userManager.UpdateAsync(user);
+
+    public Task<IdentityResult> DeleteAsync(AppUser user)
+        => _userManager.DeleteAsync(user);
 }

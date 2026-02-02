@@ -5,5 +5,5 @@ public class Order
     public decimal TotalAmount { set; get; }
     public OrderStatus OrderStatus { set; get; }
     public List<OrderItem> OrderItems { set; get; } = new();
-    public int UserId { set; get; }
+    public string UserId { set; get; } = null!;
 }

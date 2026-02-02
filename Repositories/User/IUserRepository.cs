@@ -1,10 +1,11 @@
+using Microsoft.AspNetCore.Identity;
+
 public interface IUserRepository
 {
-    Task<User> CreateAsync(User user);
+    Task<AppUser?> FindByIdAsync(string id);
+    Task<AppUser?> FindByEmailAsync(string email);
+    Task<IList<string>> GetRolesAsync(AppUser user);
 
-    Task<User?> GetUserAsync(int id);
-
-    Task UpdateAsync(User user);
-
-    Task DeleteAsync(User user);
+    Task<IdentityResult> UpdateAsync(AppUser user);
+    Task<IdentityResult> DeleteAsync(AppUser user);
 }

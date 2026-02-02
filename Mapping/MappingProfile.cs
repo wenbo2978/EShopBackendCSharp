@@ -4,12 +4,11 @@ public class MappingProfile : Profile
 {
     public MappingProfile()
     {
-        CreateMap<User, UserDto>();
-        CreateMap<UserDto, User>();
-        CreateMap<CreateUserDto, User>();
-        CreateMap<User, CreateUserDto>();
-        CreateMap<UpdateUserDto, User>();
-        CreateMap<User, UpdateUserDto>();
-        CreateMap<Role, RoleDto>();
+        CreateMap<AppUser, UserDto>();
+        CreateMap<UserDto, AppUser>();
+        CreateMap<CreateUserDto, AppUser>();
+        CreateMap<AppUser, CreateUserDto>();
+        CreateMap<UpdateUserDto, AppUser>();
+        CreateMap<AppUser, UpdateUserDto>();
     }
 }

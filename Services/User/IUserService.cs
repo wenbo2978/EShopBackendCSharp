@@ -1,9 +1,9 @@
 public interface IUserService
 {
-    Task<List<UserDto>> GetAllUsers();
-    Task<UserDto> CreateUser(CreateUserDto userDto);
+    Task<UserDto?> GetByIdAsync(string id);
+    Task<UserDto?> GetByEmailAsync(string email);
 
-    Task<UserDto?> GetUser(int id);
-    Task<bool> UpdateUser(int id, UpdateUserDto userDto);
-    Task<bool> DeleteUser(int id);
+    Task<(bool Ok, IEnumerable<string> Errors, UserDto? User)> UpdateAsync(string id, UpdateUserRequest req);
+
+    Task<(bool Ok, IEnumerable<string> Errors)> DeleteAsync(string id);
 }
