@@ -1,7 +1,7 @@
 using Microsoft.AspNetCore.Mvc;
 
 [ApiController]
-[Route("/api/image")]
+[Route("/api/images")]
 public class ImageController : ControllerBase
 {
     private readonly S3Uploader _s3Uploader;
@@ -13,10 +13,27 @@ public class ImageController : ControllerBase
         ?? throw new InvalidOperationException("AWS_REGION Is Missing!");
     private string? bucketName = Environment.GetEnvironmentVariable("AWS_BUCKETNAME");
     private string? folderName = Environment.GetEnvironmentVariable("AWS_FOLDER");
+    private readonly IImageService _service;
 
-    public ImageController()
+    public ImageController(IImageService service)
     {
         _s3Uploader = new S3Uploader(accessKey, secretKey, region);
+        _service = service;
+    }
+
+    [HttpGet("product/{productId:int}")]
+    public async Task<IActionResult> GetByProduct(int productId)
+    {
+        var images = await _service.GetByProductIdAsync(productId);
+        return Ok(images);
+    }
+
+    [HttpGet("{id:int}")]
+    public async Task<IActionResult> GetById(int id)
+    {
+        var image = await _service.GetByIdAsync(id);
+        if (image == null) return NotFound("Image not found.");
+        return Ok(image);
     }
 
     [HttpPost("{id}")]
@@ -33,14 +50,23 @@ public class ImageController : ControllerBase
         if(folderName == null)
             throw new InvalidOperationException("AWS_FOLDER Setting is Invalid!");
         //string bucketName = "eshop-bucket-chen1997";
-            foreach (var file in files)
-            {
-                string keyName = $"{folderName}/{Guid.NewGuid()}_{file.FileName}";
-                var url = await _s3Uploader.UploadFileAsync(file, bucketName, keyName);
-                string key = new Uri(url).AbsolutePath.TrimStart('/');
-                string pic = key.Split('/')[1];
-                uploadedUrls.Add(pic);
-            }
+        foreach (var file in files)
+        {
+            string keyName = $"{folderName}/{Guid.NewGuid()}_{file.FileName}";
+            var url = await _s3Uploader.UploadFileAsync(file, bucketName, keyName);
+            string key = new Uri(url).AbsolutePath.TrimStart('/');
+            string pic = key.Split('/')[1];
+            uploadedUrls.Add(pic);
+            CreateImageRequest req = new CreateImageRequest(
+                file.FileName,
+                file.ContentType,
+                url,
+                false,
+                id
+            );
+            var (ok, error, data) = await _service.CreateAsync(req);
+            if (!ok) return BadRequest(error);
+        }
 
 
         return Ok(new { urls = uploadedUrls });

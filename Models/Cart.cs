@@ -4,5 +4,5 @@ public class Cart
     public decimal TotalAmount { set; get; } = 0;
     public string UserId { set; get; } = null!;
     public AppUser? User { set; get; }
-    public List<CartItem?> Items { set; get; } = new();
+    public List<CartItem> Items { set; get; } = new();
 }
