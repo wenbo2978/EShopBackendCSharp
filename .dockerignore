@@ -1,0 +1,46 @@
+# Build artifacts
+bin/
+obj/
+out/
+
+# User-specific files
+*.user
+*.suo
+*.userosscache
+*.sln.docstates
+
+# Rider / VS Code / Visual Studio
+.vscode/
+.idea/
+.vs/
+
+# OS files
+.DS_Store
+Thumbs.db
+
+# Logs
+*.log
+logs/
+
+# Git
+.git/
+.gitignore
+.gitattributes
+
+# Docker files (optional but usually excluded from build context)
+docker-compose.yml
+docker-compose.override.yml
+
+# Environment files
+.env
+.env.*
+appsettings.Development.json
+
+# Node (if you have frontend in same repo)
+node_modules/
+
+# Test results
+TestResults/
+
+# Coverage
+coverage/

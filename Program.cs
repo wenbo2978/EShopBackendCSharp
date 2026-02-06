@@ -77,10 +77,16 @@ builder.Services.AddScoped<IdentityDataSeeder>();
 
 var app = builder.Build();
 
-// Configure the HTTP request pipeline.
-if (app.Environment.IsDevelopment())
+using (var scope = app.Services.CreateScope())
 {
-    Console.WriteLine("ddddd");
+    var db = scope.ServiceProvider.GetRequiredService<AppDbContext>();
+    await db.Database.MigrateAsync(); // applies migrations automatically
+}
+
+// Configure the HTTP request pipeline.
+if (app.Environment.IsDevelopment() || app.Environment.IsEnvironment("Docker"))
+{
+    //Console.WriteLine("ddddd");
     using var scope = app.Services.CreateScope();
     var seeder = scope.ServiceProvider.GetRequiredService<IdentityDataSeeder>();
     await seeder.SeedAsync();

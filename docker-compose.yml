@@ -1,0 +1,54 @@
+services:
+  db:
+    image: mysql:8.0
+    container_name: eshop-mysql
+    environment:
+      MYSQL_ROOT_PASSWORD: root
+      MYSQL_DATABASE: eshopdb
+    ports:
+      - "3308:3306"
+    volumes:
+      - mysql_data:/var/lib/mysql
+    healthcheck:
+      test: ["CMD", "mysqladmin", "ping", "-h", "localhost", "-proot"]
+      interval: 5s
+      timeout: 5s
+      retries: 30
+
+  api:
+    build:
+      context: .
+      dockerfile: Dockerfile
+    env_file:
+      - .env
+    container_name: eshop-api
+    depends_on:
+      db:
+        condition: service_healthy
+    environment:
+      ASPNETCORE_ENVIRONMENT: Docker
+
+      # Connection string (note server=db, not localhost)
+      ConnectionStrings__DefaultConnection: "server=db;port=3306;database=eshopdb;user=root;password=root"
+
+      # JWT settings
+      Jwt__Key: "SFASBFAKSRBJBCSJKABDJKSABFKSAJBKSAFKSAJBFSAFSFOKH"
+      Jwt__Issuer: "eshop-api"
+      Jwt__Audience: "eshop-client"
+      Jwt_ExpiresMinutes: 60
+
+      # Seeder admin
+      Seed__AdminEmail: "admin@eshop.com"
+      Seed__AdminPassword: "Admin123!"
+
+      # aws s3
+      AWS_ACCESS_KEY: ${AWS_ACCESS_KEY}
+      AWS_SECRET_KEY: ${AWS_SECRET_KEY}
+      AWS_REGION: ${AWS_REGION}
+      AWS_BUCKETNAME: ${AWS_BUCKETNAME}
+      AWS_FOLDER: ${AWS_FOLDER}
+    ports:
+      - "8089:8080"
+
+volumes:
+  mysql_data:
